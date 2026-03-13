@@ -60,7 +60,7 @@ def extract_clinical_data(state: EncounterState) -> dict:
 
     # Get conversation history
     conversation = "\n".join([
-        f"{msg.type}: {msg.content}"
+        f"{msg.type}: {msg.content if isinstance(msg.content, str) else str(msg.content)}"
         for msg in state.get("messages", [])
         if isinstance(msg, (HumanMessage, AIMessage))
     ])
@@ -81,7 +81,7 @@ If information is not mentioned, write "Not provided".
 """
 
     response = llm.invoke([HumanMessage(content=extraction_prompt)])
-    extracted = response.content
+    extracted = response.content if isinstance(response.content, str) else str(response.content)
 
     # Parse extracted data (simplified - in production would use structured output)
     updates = {
@@ -107,7 +107,8 @@ def triage_node(state: EncounterState) -> dict:
 
     chief_complaint = state.get("chief_complaint", "")
     conversation = "\n".join([
-        msg.content for msg in state.get("messages", [])[-5:]
+        msg.content if isinstance(msg.content, str) else str(msg.content)
+        for msg in state.get("messages", [])[-5:]
         if isinstance(msg, (HumanMessage, AIMessage))
     ])
 
@@ -134,7 +135,7 @@ REASONING: [your reasoning]
 """
 
     response = llm.invoke([HumanMessage(content=triage_prompt)])
-    triage_text = response.content
+    triage_text = response.content if isinstance(response.content, str) else str(response.content)
 
     # Parse triage level
     triage_level = "ESI-3"  # default

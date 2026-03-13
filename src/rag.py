@@ -3,6 +3,7 @@ RAG (Retrieval-Augmented Generation) setup using ChromaDB.
 Manages vector stores for drug interactions, clinical guidelines, and patient education.
 """
 
+from typing import Optional
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 from langchain_community.vectorstores import Chroma
@@ -131,9 +132,9 @@ class RAGManager:
     def chunk_text(
         self,
         text: str,
-        chunk_size: int = None,
-        chunk_overlap: int = None,
-        metadata: dict = None
+        chunk_size: Optional[int] = None,
+        chunk_overlap: Optional[int] = None,
+        metadata: Optional[dict] = None
     ) -> list[Document]:
         """
         Chunk text into Documents suitable for RAG.
@@ -178,7 +179,7 @@ class RAGManager:
             List of dicts with 'content', 'source', 'score'
         """
         retriever = self.get_drug_retriever(k=k)
-        docs = retriever.get_relevant_documents(query)
+        docs = retriever.invoke(query)
 
         return [
             {
@@ -201,8 +202,8 @@ class RAGManager:
         Returns:
             List of dicts with 'content', 'source', 'score'
         """
-        retriever = self.guidelines_retriever(k=k)
-        docs = retriever.get_relevant_documents(query)
+        retriever = self.get_guidelines_retriever(k=k)
+        docs = retriever.invoke(query)
 
         return [
             {

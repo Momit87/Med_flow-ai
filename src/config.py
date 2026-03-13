@@ -4,8 +4,9 @@ Configuration for LLM providers, embeddings, and system settings.
 
 import os
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
+from langchain_community.embeddings import FakeEmbeddings
 
 # Load environment variables
 load_dotenv()
@@ -15,7 +16,7 @@ load_dotenv()
 # LLM Configuration
 # ============================================================================
 
-def get_llm(provider: str = "gemini", temperature: float = 0.1):
+def get_llm(provider: str = "groq", temperature: float = 0.1):
     """
     Get LLM instance based on provider.
 
@@ -30,11 +31,11 @@ def get_llm(provider: str = "gemini", temperature: float = 0.1):
         return ChatGroq(
             model="llama-3.3-70b-versatile",
             temperature=temperature,
-            groq_api_key=os.getenv("GROQ_API_KEY"),
+            api_key=os.getenv("GROQ_API_KEY"),
         )
     else:  # default to gemini
         return ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-exp",
+            model="gemini-2.0-flash",
             temperature=temperature,
             google_api_key=os.getenv("GOOGLE_API_KEY"),
         )
@@ -43,7 +44,7 @@ def get_llm(provider: str = "gemini", temperature: float = 0.1):
 def get_vision_llm():
     """Get multimodal LLM for image analysis."""
     return ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash-exp",
+        model="gemini-2.0-flash",
         temperature=0,  # Deterministic for image analysis
         google_api_key=os.getenv("GOOGLE_API_KEY"),
     )
@@ -51,10 +52,9 @@ def get_vision_llm():
 
 def get_embeddings():
     """Get embedding model for RAG."""
-    return GoogleGenerativeAIEmbeddings(
-        model="models/text-embedding-004",
-        google_api_key=os.getenv("GOOGLE_API_KEY"),
-    )
+    # Using lightweight fake embeddings for demo purposes
+    # In production, use real embeddings like HuggingFace or OpenAI
+    return FakeEmbeddings(size=384)
 
 
 # ============================================================================
@@ -70,7 +70,7 @@ class Settings:
     CHECKPOINT_DB = "./encounters.db"
 
     # LLM Settings
-    DEFAULT_LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
+    DEFAULT_LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq")
     DEFAULT_TEMPERATURE = 0.1  # Low temperature for clinical accuracy
 
     # RAG Settings
