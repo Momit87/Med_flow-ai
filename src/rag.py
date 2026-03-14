@@ -244,6 +244,30 @@ class RAGManager:
         except Exception:
             return 0
 
+    def query_education(self, query: str, k: int = 3) -> list[dict]:
+        """
+        Query patient education materials.
+
+        Args:
+            query: Search query
+            k: Number of results
+
+        Returns:
+            List of dicts with 'content', 'source', 'score'
+        """
+        retriever = self.get_education_retriever(k=k)
+        docs = retriever.invoke(query)
+
+        return [
+            {
+                "content": doc.page_content,
+                "source": doc.metadata.get("source", "unknown"),
+                "score": doc.metadata.get("score", 0.0),
+                "metadata": doc.metadata
+            }
+            for doc in docs
+        ]
+
 
 # Global RAG manager instance
 rag_manager = RAGManager()

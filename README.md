@@ -1,8 +1,8 @@
 # MedFlow AI - Multi-Agent Clinical Encounter Orchestrator
 
-🏥 **Portfolio-grade demonstration of production-level AI agent architecture for healthcare workflows**
+🏥 **Production-grade demonstration of advanced AI agent architecture for healthcare workflows**
 
-Powered by Google Gemini • LangChain • LangGraph • ChromaDB • Streamlit
+Powered by Groq (Llama 3.3) • Google Gemini • LangChain • LangGraph • ChromaDB • Streamlit
 
 ---
 
@@ -80,12 +80,37 @@ Patient Input → Streamlit UI
 
 ### Prerequisites
 
-- Python 3.10+
-- Google API key (for Gemini)
-- Optional: Groq API key (for faster inference)
-- Optional: LangSmith API key (for tracing)
+- Python 3.10+ (or Docker)
+- Groq API key (default provider - free tier available)
+- Optional: Google API key (for Gemini vision/multimodal)
+- Optional: LangSmith API key (for tracing/observability)
 
-### Installation
+### Option 1: Docker Deployment (Recommended)
+
+1. **Clone and configure**
+```bash
+git clone <repository-url>
+cd Med_flow
+cp .env.example .env
+```
+
+2. **Add your API keys to `.env`**
+```ini
+GROQ_API_KEY=your-groq-api-key-here
+GOOGLE_API_KEY=your-gemini-api-key-here  # Optional
+```
+
+3. **Run with Docker Compose**
+```bash
+docker-compose up -d
+```
+
+4. **Access the app**
+```
+Open http://localhost:8501
+```
+
+### Option 2: Manual Installation
 
 1. **Clone the repository**
 ```bash
