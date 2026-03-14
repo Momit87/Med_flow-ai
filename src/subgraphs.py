@@ -5,7 +5,8 @@ Includes Intake Agent, Safety Sentinel, Evidence Synthesizer, and other speciali
 
 from typing import Annotated, Literal
 from typing_extensions import TypedDict
-from langgraph.graph import StateGraph, START, END, Send
+from langgraph.graph import StateGraph, START, END
+from langgraph.types import Send
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from src.config import get_llm
 from src.state import EncounterState, Medication, SafetyAlert

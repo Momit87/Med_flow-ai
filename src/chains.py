@@ -147,7 +147,7 @@ def validate_soap_note(soap_sections: Dict[str, str]) -> Dict[str, Any]:
             validation_results["warnings"].append("Subjective section may lack detail")
 
         # Warn if assessment doesn't have diagnosis
-            if "assessment" in soap_sections and "diagnosis" not in soap_sections["assessment"].lower():
+        if "assessment" in soap_sections and "diagnosis" not in soap_sections["assessment"].lower():
             validation_results["warnings"].append("Assessment may lack clear diagnosis")
 
     return validation_results
