@@ -27,6 +27,8 @@ build/
 *.db
 *.sqlite
 *.sqlite3
+*.db-shm
+*.db-wal
 encounters.db
 chroma_db/
 
@@ -53,3 +55,10 @@ data/*.csv
 # Temporary files
 *.tmp
 *.bak
+
+# Export files
+*.pdf
+scripts/export_medical_data_to_pdf.py
+
+# Other
+update_*.txt
