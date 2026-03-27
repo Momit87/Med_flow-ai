@@ -104,7 +104,6 @@ with st.sidebar:
     # Session Info
     st.markdown("### 📋 Session Info")
     st.text(f"Patient ID: {st.session_state.patient_id}")
-    st.text(f"Thread ID: {st.session_state.thread_id[:8]}...")
 
     # New encounter button
     if st.button("🔄 New Encounter", use_container_width=True):
@@ -121,7 +120,7 @@ with st.sidebar:
     st.markdown("### 🔍 Load Conversation")
 
     search_term = st.text_input(
-        "Search by Patient ID or Thread ID",
+        "Search by Patient ID",
         placeholder="e.g., DEMO-1a2b3c4d",
         key="search_input"
     )
@@ -136,7 +135,6 @@ with st.sidebar:
             for i, conv in enumerate(matching_conversations[:5]):  # Show top 5
                 with st.expander(f"📋 {conv.get('patient_id', 'N/A')[:15]}... | {conv.get('chief_complaint', 'N/A')[:30]}"):
                     st.text(f"Patient ID: {conv.get('patient_id')}")
-                    st.text(f"Thread ID: {conv.get('thread_id', 'N/A')[:16]}...")
                     st.text(f"Complaint: {conv.get('chief_complaint', 'N/A')}")
                     st.text(f"Triage: {conv.get('triage_level', 'N/A')}")
                     st.text(f"Status: {conv.get('status', 'N/A')}")
