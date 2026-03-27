@@ -8,6 +8,7 @@ import uuid
 from datetime import datetime
 from src.graph import app as encounter_app, stream_encounter
 from src.config import settings
+from src.input_filter import is_medical_query, get_non_medical_response
 from langchain_core.messages import HumanMessage, AIMessage
 
 # ============================================================================
@@ -192,43 +193,17 @@ if prompt := st.chat_input("Describe your symptoms..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    # Check if query is medical-related before invoking agents
+    filter_result = is_medical_query(prompt)
+
     # Process with agent system
     with st.chat_message("assistant"):
         response_placeholder = st.empty()
         status_placeholder = st.empty()
 
-        try:
-            # Show processing status
-            with status_placeholder.status("🤔 Processing...", expanded=True) as status:
-                st.write("Analyzing your input...")
-
-                # Stream response
-                full_response = ""
-                latest_state = {}
-
-                for event in stream_encounter(
-                    patient_id=st.session_state.patient_id,
-                    thread_id=st.session_state.thread_id,
-                    user_message=prompt
-                ):
-                    # Update state tracking
-                    for node_name, node_state in event.items():
-                        st.write(f"✓ {node_name} complete")
-                        latest_state.update(node_state)
-
-                        # Extract assistant message if present
-                        if "messages" in node_state:
-                            for msg in node_state["messages"]:
-                                if isinstance(msg, AIMessage):
-                                    full_response = msg.content
-
-                # Update stored state
-                st.session_state.encounter_state = latest_state
-
-                status.update(label="✅ Complete!", state="complete")
-
-            # Clear status and show response
-            status_placeholder.empty()
+        # If not medical, return polite message without calling agents
+        if not filter_result["is_medical"]:
+            full_response = get_non_medical_response()
             response_placeholder.markdown(full_response)
 
             # Add assistant response to chat history
@@ -237,12 +212,65 @@ if prompt := st.chat_input("Describe your symptoms..."):
                 "content": full_response
             })
 
-            # Force rerun to update sidebar
-            st.rerun()
+            # Show filter info in sidebar (optional debug info)
+            with st.sidebar:
+                with st.expander("🔍 Input Filter Debug", expanded=False):
+                    st.write(f"**Medical Query:** {filter_result['is_medical']}")
+                    st.write(f"**Confidence:** {filter_result['confidence']:.2f}")
+                    st.write(f"**Reason:** {filter_result['reason']}")
 
-        except Exception as e:
-            st.error(f"Error processing request: {str(e)}")
-            st.exception(e)
+        else:
+            # Medical query - proceed with full agent workflow
+            try:
+                # Show processing status
+                with status_placeholder.status("🤔 Processing...", expanded=True) as status:
+                    st.write("Analyzing your input...")
+
+                    # Show filter info
+                    if filter_result['matched_keywords']:
+                        st.write(f"Detected medical keywords: {', '.join(filter_result['matched_keywords'][:3])}")
+
+                    # Stream response
+                    full_response = ""
+                    latest_state = {}
+
+                    for event in stream_encounter(
+                        patient_id=st.session_state.patient_id,
+                        thread_id=st.session_state.thread_id,
+                        user_message=prompt
+                    ):
+                        # Update state tracking
+                        for node_name, node_state in event.items():
+                            st.write(f"✓ {node_name} complete")
+                            latest_state.update(node_state)
+
+                            # Extract assistant message if present
+                            if "messages" in node_state:
+                                for msg in node_state["messages"]:
+                                    if isinstance(msg, AIMessage):
+                                        full_response = msg.content
+
+                    # Update stored state
+                    st.session_state.encounter_state = latest_state
+
+                    status.update(label="✅ Complete!", state="complete")
+
+                # Clear status and show response
+                status_placeholder.empty()
+                response_placeholder.markdown(full_response)
+
+                # Add assistant response to chat history
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": full_response
+                })
+
+                # Force rerun to update sidebar
+                st.rerun()
+
+            except Exception as e:
+                st.error(f"Error processing request: {str(e)}")
+                st.exception(e)
 
 
 # ============================================================================
