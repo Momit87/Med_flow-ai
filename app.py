@@ -9,6 +9,7 @@ from datetime import datetime
 from src.graph import app as encounter_app, stream_encounter
 from src.config import settings
 from src.input_filter import is_medical_query, get_non_medical_response
+from src.checkpoint_manager import search_conversations, load_conversation, format_conversation_summary
 from langchain_core.messages import HumanMessage, AIMessage
 
 # ============================================================================
@@ -113,6 +114,54 @@ with st.sidebar:
         st.session_state.encounter_state = {}
         st.session_state.encounter_started = False
         st.rerun()
+
+    st.divider()
+
+    # Search and Load Previous Conversations
+    st.markdown("### 🔍 Load Conversation")
+
+    search_term = st.text_input(
+        "Search by Patient ID or Thread ID",
+        placeholder="e.g., DEMO-1a2b3c4d",
+        key="search_input"
+    )
+
+    if search_term:
+        matching_conversations = search_conversations(search_term)
+
+        if matching_conversations:
+            st.markdown(f"**Found {len(matching_conversations)} conversation(s):**")
+
+            # Display matching conversations
+            for i, conv in enumerate(matching_conversations[:5]):  # Show top 5
+                with st.expander(f"📋 {conv.get('patient_id', 'N/A')[:15]}... | {conv.get('chief_complaint', 'N/A')[:30]}"):
+                    st.text(f"Patient ID: {conv.get('patient_id')}")
+                    st.text(f"Thread ID: {conv.get('thread_id', 'N/A')[:16]}...")
+                    st.text(f"Complaint: {conv.get('chief_complaint', 'N/A')}")
+                    st.text(f"Triage: {conv.get('triage_level', 'N/A')}")
+                    st.text(f"Status: {conv.get('status', 'N/A')}")
+                    st.text(f"Updated: {conv.get('last_updated_at', 'N/A')[:19]}")
+
+                    # Load button for this conversation
+                    if st.button(f"Load This Conversation", key=f"load_{i}"):
+                        loaded = load_conversation(conv.get('thread_id'))
+
+                        if loaded:
+                            # Update session state with loaded conversation
+                            st.session_state.patient_id = loaded['patient_id']
+                            st.session_state.thread_id = loaded['thread_id']
+                            st.session_state.messages = loaded['messages']
+                            st.session_state.encounter_state = loaded['encounter_state']
+                            st.session_state.encounter_started = True
+
+                            st.success("✅ Conversation loaded!")
+                            st.rerun()
+                        else:
+                            st.error("Failed to load conversation")
+        else:
+            st.info("No matching conversations found")
+    else:
+        st.caption("Enter a Patient ID or Thread ID to search")
 
     st.divider()
 
