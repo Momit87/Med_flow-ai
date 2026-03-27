@@ -9,7 +9,7 @@ from datetime import datetime
 from src.graph import app as encounter_app, stream_encounter
 from src.config import settings
 from src.input_filter import is_medical_query, get_non_medical_response
-from src.checkpoint_manager import search_conversations, load_conversation, format_conversation_summary
+from src.checkpoint_manager import search_conversations, load_conversation
 from langchain_core.messages import HumanMessage, AIMessage
 
 # ============================================================================
