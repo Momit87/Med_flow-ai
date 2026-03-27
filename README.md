@@ -40,7 +40,7 @@ This project serves as a comprehensive portfolio piece demonstrating:
 
 - 🏗️ **Complex system architecture** with multiple coordinated agents
 - 🔄 **State management** using LangGraph checkpointing and persistence
-- 🔍 **RAG implementation** with ChromaDB vector database (490 medical documents)
+- 🔍 **RAG implementation** with ChromaDB vector database (demo medical documents)
 - 🚀 **Real-time streaming** and progressive updates
 - 🛡️ **Safety-first design** with input filtering and emergency detection
 - 📊 **Observability** through comprehensive logging and tracing
@@ -57,7 +57,7 @@ This project serves as a comprehensive portfolio piece demonstrating:
 |---------|-------------|--------|
 | **🤖 Multi-Agent Orchestration** | 6+ specialized agents coordinated via LangGraph supervisor pattern | ✅ Complete |
 | **💬 Adaptive Patient Intake** | Context-aware conversational interview with dynamic questioning | ✅ Complete |
-| **🔍 Drug Interaction Screening** | Parallel RAG lookups against 478 FDA drug interaction documents | ✅ Complete |
+| **🔍 Drug Interaction Screening** | Parallel RAG lookups against demo drug interaction documents | ✅ Complete |
 | **🚨 Emergency Triage** | ESI (Emergency Severity Index) 1-5 classification with reasoning | ✅ Complete |
 | **📋 Clinical Documentation** | Auto-generated SOAP notes from conversation history | ✅ Complete |
 | **🎓 Patient Education** | Dynamic content retrieval based on care setting and reading level | ✅ Complete |
@@ -128,7 +128,7 @@ This project serves as a comprehensive portfolio piece demonstrating:
 │                                                                 │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐        │
 │  │  ChromaDB    │  │  LLM APIs    │  │   SQLite     │        │
-│  │  (490 docs)  │  │ Groq/Gemini  │  │ Checkpoints  │        │
+│  │  (Demo docs) │  │ Groq/Gemini  │  │ Checkpoints  │        │
 │  └──────────────┘  └──────────────┘  └──────────────┘        │
 │                                                                 │
 │  ┌──────────────────────────────────────────────────────────┐ │
@@ -201,10 +201,10 @@ cp .env.example .env
 python scripts/ingest_medical_data.py
 
 # Expected output:
-# ✓ Drug Interactions: 478 documents
-# ✓ Clinical Guidelines: 6 documents
-# ✓ Patient Education: 6 documents
-# Total: 490 documents in ChromaDB
+# ✓ Drug Interactions: demo documents loaded
+# ✓ Clinical Guidelines: demo documents loaded
+# ✓ Patient Education: demo documents loaded
+# Total: Demo medical documents ingested to ChromaDB
 
 # 5. Launch application
 streamlit run app.py
@@ -245,7 +245,7 @@ Once running, you should see:
 👤 User: "I'm currently taking warfarin 5mg daily and aspirin 81mg. Are these safe together?"
 
 🤖 MedFlow AI:
-   • Searches 478 drug interaction documents
+   • Searches drug interaction database
    • Identifies major interaction risk
    • Provides clinical guidance
    • Recommends INR monitoring
@@ -325,7 +325,7 @@ Med_flow/
 │   └── .gitkeep
 │
 ├── chroma_db/                    # Persistent vector store
-│   └── chroma.sqlite3            # 490 embedded documents (4.9 MB)
+│   └── chroma.sqlite3            # Demo embedded documents
 │
 ├── app.py                        # Streamlit web application
 ├── Dockerfile                    # Production container image
@@ -510,7 +510,7 @@ pytest tests/
 # Test data ingestion
 python scripts/ingest_medical_data.py
 
-# Expected: 490 documents successfully ingested
+# Expected: Demo documents successfully ingested
 ```
 
 ---

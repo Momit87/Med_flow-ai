@@ -389,21 +389,21 @@ class RAGManager:
 
 ### 5.2 Data Ingestion Pipeline (`scripts/ingest_medical_data.py`)
 
-**Drug Interaction Data (478 documents):**
+**Drug Interaction Data:**
 
-1. **Fetch from openFDA API**: Query drug labels endpoint
-2. **Extract interaction sections**: Parse JSON responses
+1. **Demo medical data**: Drug interaction information for RAG demonstration
+2. **Extract interaction sections**: Parse medical content
 3. **Chunk text**: Split into 512-token chunks with 50-token overlap
 4. **Generate embeddings**: Use Google Embedding 004
-5. **Store in ChromaDB**: Add with metadata (drug name, NDC code, etc.)
+5. **Store in ChromaDB**: Add with metadata (drug name, categories, etc.)
 
-**Clinical Guidelines (6 documents):**
+**Clinical Guidelines:**
 
 1. **Synthetic evidence-based content**: Chest pain, headache, fever protocols
 2. **Chunk by section**: Each protocol as separate document
 3. **Rich metadata**: Condition, ESI level, emergency flag
 
-**Patient Education (6 documents):**
+**Patient Education:**
 
 1. **Reading level adapted**: 6th-8th grade Flesch-Kincaid
 2. **Care setting specific**: ED vs primary care vs pediatrics
@@ -433,10 +433,10 @@ def query_drug_interactions(drug_name: str, k: int = 5):
 
 | Metric | Value |
 |--------|-------|
-| **Total Documents** | 490 |
+| **Total Documents** | Demo medical documents |
 | **Average Retrieval Latency** | 50-100ms |
 | **Embedding Dimension** | 768 (Gemini Embedding 004) |
-| **Database Size** | 4.9 MB (chroma.sqlite3) |
+| **Database Size** | ~5 MB (chroma.sqlite3) |
 | **Query Accuracy** (manual eval) | ~85% relevant in top-3 |
 
 ---
