@@ -131,9 +131,6 @@ This project serves as a comprehensive portfolio piece demonstrating:
 │  │  (Demo docs) │  │ Groq/Gemini  │  │ Checkpoints  │           │
 │  └──────────────┘  └──────────────┘  └──────────────┘           │
 │                                                                 │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │  Custom Tools: Drug Lookup • ICD-10 • PubMed • Vision    │   │
-│  └──────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
